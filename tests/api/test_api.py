@@ -7,12 +7,13 @@ from fastapi.testclient import TestClient
 TOKEN = "s3cret-token"
 
 PAYLOAD = dict(
-    regulation="ai_act",
+    regulation="dl_150_2015",
     part="article",
     article_num=26,
-    celex="32024R1689",
-    header="Article 26",
-    text="Deployers shall...",
+    diploma="Decreto-Lei n.º 150/2015",
+    eli="https://data.dre.pt/eli/dec-lei/150/2015/08/05/p/dre/pt/html",
+    header="Artigo 26.º — Decreto-Lei n.º 150/2015",
+    text="O operador é responsável por...",
     content_hash="abc123",
 )
 
@@ -31,7 +32,7 @@ def parse_sse(text: str) -> list[dict]:
 @pytest.fixture
 def client(monkeypatch):
     monkeypatch.delenv("API_TOKEN", raising=False)
-    import safety_rag.api.main as main
+    import pt_amb_rag.api.main as main
 
     def fake_ask(question, **kwargs):
         return {
@@ -73,7 +74,7 @@ def test_ask_streams_answer_sources_done(client):
 
 
 def test_ask_emits_error_event_on_failure(client, monkeypatch):
-    import safety_rag.api.main as main
+    import pt_amb_rag.api.main as main
 
     def boom(question, **kwargs):
         raise RuntimeError("llm down")
@@ -94,7 +95,10 @@ def test_ask_validates_request(client):
 def test_search_returns_results(client):
     r = client.post("/search", json={"question": "q", "k": 3})
     assert r.status_code == 200
-    assert r.json()["results"][0]["header"] == "Article 26"
+    assert (
+        r.json()["results"][0]["header"]
+        == "Artigo 26.º — Decreto-Lei n.º 150/2015"
+    )
 
 
 @pytest.mark.parametrize("path", ["/ask", "/search"])

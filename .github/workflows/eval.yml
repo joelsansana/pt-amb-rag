@@ -7,7 +7,7 @@ on:
 jobs:
   retrieval:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
 
@@ -32,30 +32,14 @@ jobs:
           done
 
       # data/ is gitignored: rebuild the corpus from source in CI.
-      # corpus_pins tests (already in the suite) fail loudly if EUR-Lex
+      # The fetch goes through the DRE screenservice API (see
+      # src/pt_amb_rag/ingestion/dre.py); the manifest in corpora.yaml
+      # declares every diploma that is fetched.
+      - name: Fetch corpus from the Diário da República
+        run: uv run python scripts/fetch_corpus.py
+
+      # corpus_pins tests (already in the suite) fail loudly if the DRE
       # content drifted and the golden set's hashes went stale.
-      - name: Download corpus from EUR-Lex
-        run: |
-          uv run python scripts/download_corpus.py 32024R1689
-          uv run python scripts/download_corpus.py 32022L2555
-
-      - name: Parse and chunk corpus
-        run: |
-          uv run python - <<'PY'
-          from safety_rag.ingestion.eur_lex import parse_eur_lex
-          from safety_rag.ingestion.chunker import chunk_records
-          import json
-          from pathlib import Path
-          for celex, name, out in [("32024R1689", "ai_act", "ai_act.jsonl"),
-                                   ("32022L2555", "nis2", "nis2.jsonl")]:
-              units = parse_eur_lex(f"data/raw/{celex}.html")
-              chunks = chunk_records(units)
-              path = Path("data/processed") / out
-              path.parent.mkdir(parents=True, exist_ok=True)
-              path.write_text("\n".join(json.dumps(c, ensure_ascii=False) for c in chunks) + "\n")
-              print(f"{name}: {len(chunks)} chunks -> {path}")
-          PY
-
       - name: Verify corpus pins (golden-set lockstep)
         run: uv run python -m pytest tests/eval/test_corpus_pins.py -q
 
@@ -65,21 +49,21 @@ jobs:
       - name: Assert index populated (points == chunks)
         run: |
           EXPECTED=$(cat data/processed/*.jsonl | grep -c .)
-          ACTUAL=$(curl -sf http://localhost:6333/collections/safety_rag_v1 \
+          ACTUAL=$(curl -sf http://localhost:6333/collections/pt_amb_rag_v1 \
             | python3 -c "import json,sys; print(json.load(sys.stdin)['result']['points_count'])")
           echo "indexed=$ACTUAL expected=$EXPECTED"
           test "$ACTUAL" = "$EXPECTED"
 
-      - name: Eval lepanto tier (retrieval-only, no LLM)
-        run: uv run python scripts/run_eval.py --tier lepanto --output eval_run_lepanto.json --summary-only --no-llm
+      - name: Eval principal tier (retrieval-only, no LLM)
+        run: uv run python scripts/run_eval.py --tier principal --output eval_run_principal.json --summary-only --no-llm
 
-      - name: Eval demo tier (retrieval-only, no LLM)
-        run: uv run python scripts/run_eval.py --tier demo --output eval_run_demo.json --summary-only --no-llm
+      - name: Eval unanswerable tier (retrieval-only, no LLM)
+        run: uv run python scripts/run_eval.py --tier unanswerable --output eval_run_unanswerable.json --summary-only --no-llm
 
       - name: Compare to main
         run: |
           uv run python scripts/eval_gate.py \
-            --current eval_run_lepanto.json \
-            --baseline-url https://raw.githubusercontent.com/joelsansana/eu-ai-rag/main/evals/results/baseline.json \
+            --current eval_run_principal.json \
+            --baseline-url https://raw.githubusercontent.com/joelsansana/pt-amb-rag/main/evals/results/baseline.json \
             --metric hit_at_5 \
             --tolerance 0.02

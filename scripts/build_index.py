@@ -2,8 +2,9 @@
 """CLI to build the Qdrant index from processed chunks.
 
 Loads every data/processed/*.jsonl file, embeds the chunks in batches of 64
-(BAAI/bge-small-en-v1.5 via safety_rag.retrieval.embedder), upserts them into
-Qdrant, and reports the total number of points now in the collection.
+(the model declared in corpora.yaml, via pt_amb_rag.retrieval.embedder),
+upserts them into Qdrant, and reports the total number of points now in the
+collection.
 
 Usage:
     uv run python scripts/build_index.py
@@ -20,7 +21,7 @@ from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
 
-from safety_rag.retrieval.vector_store import (
+from pt_amb_rag.retrieval.vector_store import (
     COLLECTION_NAME,
     ensure_collection,
     get_client,

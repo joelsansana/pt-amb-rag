@@ -1,0 +1,131 @@
+# Corpus manifest for pt-amb-rag.
+#
+# Every instrument the pipeline ingests is declared here. Adding a
+# diploma is a manifest edit, not a code change.
+#
+# `source.tipo` and `source.key` are the two identifiers the DRE
+# screenservice needs: `tipo` is the URL segment used by
+# `/dr/detalhe/<tipo>/<key>` and `key` is the trailing identifier of
+# that same URL.
+#
+# `source.eli` and `source.pdf_url` are the DRE's own canonical
+# references for the same document. The PDF is the only artefact that
+# carries the numeric tables of the anexos — the HTML served by the
+# screenservice has no table markup at all — so a corpus that needs
+# emission-limit values must also keep the PDF.
+#
+# `tags` drive the eval slices; `eval_tiers` lists the golden-set
+# tiers the eval runner may be asked for.
+
+language:
+  code: pt-PT
+  month_names:
+    - janeiro
+    - fevereiro
+    - março
+    - abril
+    - maio
+    - junho
+    - julho
+    - agosto
+    - setembro
+    - outubro
+    - novembro
+    - dezembro
+  # The deterministic sentinel the assistant must reply with when the
+  # corpus does not answer the question. It is matched by the judge
+  # and by the unanswerable tier, so it must change atomically with
+  # the prompts.
+  abstention: "O corpus não responde a esta pergunta."
+  citation_hint: >-
+    Cite assim: [DL n.º 150/2015, art. 8.º, n.º 2, al. b)] ou
+    [Portaria n.º 38/2025, anexo I]. Nunca cites só o diploma sem o
+    artigo.
+
+embedding:
+  model: BAAI/bge-m3
+  dimension: 1024
+  collection: pt_amb_rag_v1
+
+eval_tiers:
+  - principal
+  - unanswerable
+
+corpora:
+  - id: dl_127_2013
+    title: "Decreto-Lei n.º 127/2013"
+    family: Decreto-Lei
+    number: "127/2013"
+    published: "2013-08-30"
+    tags: [rei, licenciamento, ambiental]
+    source:
+      type: dre
+      tipo: decreto-lei
+      key: 127-2013-499546
+      eli: https://data.dre.pt/eli/dec-lei/127/2013/08/30/p/dre/pt/html
+      pdf_url: https://files.diariodarepublica.pt/1s/2013/08/16700/0532405389.pdf
+
+  - id: dl_150_2015
+    title: "Decreto-Lei n.º 150/2015"
+    family: Decreto-Lei
+    number: "150/2015"
+    published: "2015-08-05"
+    tags: [seveso, acidentes_graves, quimica]
+    source:
+      type: dre
+      tipo: decreto-lei
+      key: 150-2015-69951097
+      eli: https://data.dre.pt/eli/dec-lei/150/2015/08/05/p/dre/pt/html
+      pdf_url: https://files.diariodarepublica.pt/1s/2015/08/15100/0537805401.pdf
+
+  - id: dl_102_d_2020
+    title: "Decreto-Lei n.º 102-D/2020"
+    family: Decreto-Lei
+    number: "102-D/2020"
+    published: "2020-12-10"
+    tags: [rggr, residuos]
+    source:
+      type: dre
+      tipo: decreto-lei
+      key: 102-d-2020-150908012
+      eli: https://data.dre.pt/eli/dec-lei/102-d/2020/12/10/p/dre/pt/html
+      pdf_url: https://files.diariodarepublica.pt/1s/2020/12/23901/0000200269.pdf
+
+  - id: dl_151_b_2013
+    title: "Decreto-Lei n.º 151-B/2013"
+    family: Decreto-Lei
+    number: "151-B/2013"
+    published: "2013-10-31"
+    tags: [aia, impacte_ambiental]
+    source:
+      type: dre
+      tipo: decreto-lei
+      key: 151-b-2013-513863
+      eli: https://data.dre.pt/eli/dec-lei/151-b/2013/10/31/p/dre/pt/html
+      pdf_url: https://files.diariodarepublica.pt/1s/2013/10/21102/0000600031.pdf
+
+  - id: dl_226_a_2007
+    title: "Decreto-Lei n.º 226-A/2007"
+    family: Decreto-Lei
+    number: "226-A/2007"
+    published: "2007-05-31"
+    tags: [aguas, recursos_hidricos]
+    source:
+      type: dre
+      tipo: decreto-lei
+      key: 226-a-2007-340237
+      eli: https://data.dre.pt/eli/dec-lei/226-a/2007/05/31/p/dre/pt/html
+      pdf_url: https://files.diariodarepublica.pt/1s/2007/05/10502/00240049.pdf
+
+  - id: dl_56_2012
+    title: "Decreto-Lei n.º 56/2012"
+    family: Decreto-Lei
+    number: "56/2012"
+    published: "2012-03-12"
+    tags: [apa, organica]
+    source:
+      type: dre
+      tipo: decreto-lei
+      key: 56-2012-553603
+      eli: https://data.dre.pt/eli/dec-lei/56/2012/03/12/p/dre/pt/html
+      pdf_url: https://files.diariodarepublica.pt/1s/2012/03/05100/0109301098.pdf

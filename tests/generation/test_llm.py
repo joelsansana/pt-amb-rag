@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from safety_rag.generation.llm import (
+from pt_amb_rag.generation.llm import (
     MODEL,
     _strip_thinking,
     generate,
@@ -74,7 +74,7 @@ class TestStripThinking:
 class TestGetClient:
     def test_uses_env_api_key_and_base_url(self, monkeypatch):
         monkeypatch.setenv("MINIMAX_API_KEY", "test-key-123")
-        with patch("safety_rag.generation.llm.OpenAI") as mock_openai:
+        with patch("pt_amb_rag.generation.llm.OpenAI") as mock_openai:
             get_client()
             mock_openai.assert_called_once_with(
                 base_url="https://api.minimax.io/v1",
@@ -104,7 +104,7 @@ class TestGenerate:
     def test_returns_stripped_content(self, monkeypatch):
         monkeypatch.setenv("MINIMAX_API_KEY", "test-key")
         with patch(
-            "safety_rag.generation.llm.get_client",
+            "pt_amb_rag.generation.llm.get_client",
             return_value=_make_mock_client("pong"),
         ):
             assert generate("Reply with one word: pong.") == "pong"
@@ -112,7 +112,7 @@ class TestGenerate:
     def test_strips_think_tags_from_response(self, monkeypatch):
         monkeypatch.setenv("MINIMAX_API_KEY", "test-key")
         with patch(
-            "safety_rag.generation.llm.get_client",
+            "pt_amb_rag.generation.llm.get_client",
             return_value=_make_mock_client(
                 "<think>let me consider</think>pong"
             ),
@@ -122,7 +122,7 @@ class TestGenerate:
     def test_none_content_returns_empty_string(self, monkeypatch):
         monkeypatch.setenv("MINIMAX_API_KEY", "test-key")
         with patch(
-            "safety_rag.generation.llm.get_client",
+            "pt_amb_rag.generation.llm.get_client",
             return_value=_make_mock_client(None),
         ):
             assert generate("ping") == ""
@@ -131,7 +131,7 @@ class TestGenerate:
         monkeypatch.setenv("MINIMAX_API_KEY", "test-key")
         mock_client = _make_mock_client("pong")
         with patch(
-            "safety_rag.generation.llm.get_client", return_value=mock_client
+            "pt_amb_rag.generation.llm.get_client", return_value=mock_client
         ):
             generate("hello")
             mock_client.chat.completions.create.assert_called_once_with(
@@ -143,7 +143,7 @@ class TestGenerate:
         monkeypatch.setenv("MINIMAX_API_KEY", "test-key")
         mock_client = _make_mock_client("pong")
         with patch(
-            "safety_rag.generation.llm.get_client", return_value=mock_client
+            "pt_amb_rag.generation.llm.get_client", return_value=mock_client
         ):
             generate("a very specific prompt")
             _, kwargs = mock_client.chat.completions.create.call_args
@@ -174,7 +174,7 @@ class TestGenerate:
             chat = FakeChat()
 
         with patch(
-            "safety_rag.generation.llm.get_client",
+            "pt_amb_rag.generation.llm.get_client",
             return_value=FakeClient(),
         ):
             generate("hi", temperature=0.2)
@@ -206,7 +206,7 @@ class TestGenerate:
             chat = FakeChat()
 
         with patch(
-            "safety_rag.generation.llm.get_client",
+            "pt_amb_rag.generation.llm.get_client",
             return_value=FakeClient(),
         ):
             generate("hi")

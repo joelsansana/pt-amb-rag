@@ -1,4 +1,4 @@
-from safety_rag.eval.prefilter import is_junk_candidate, prefilter
+from pt_amb_rag.eval.prefilter import is_junk_candidate, prefilter
 
 
 def make(q: str, **overrides) -> dict:

@@ -10,10 +10,10 @@ Questions are asked unfiltered (no regulation/part/article_num) — golden
 questions model a realistic user, who wouldn't pass internal filters.
 
 Usage:
-    uv run python scripts/run_eval.py --tier lepanto
+    uv run python scripts/run_eval.py --tier principal
     uv run python scripts/run_eval.py --tier demo \
         --output evals/results/demo_run.json
-    uv run python scripts/run_eval.py --tier lepanto \
+    uv run python scripts/run_eval.py --tier principal \
         --output evals/results/baseline.json --summary-only
 """
 
@@ -26,8 +26,9 @@ import statistics
 import time
 from pathlib import Path
 
-from safety_rag.api.ask import ask
-from safety_rag.eval.metrics import hit_at_k, mrr_at_k, recall_at_k
+from pt_amb_rag.api.ask import ask
+from pt_amb_rag.config import load_config
+from pt_amb_rag.eval.metrics import hit_at_k, mrr_at_k, recall_at_k
 
 logger = logging.getLogger(__name__)
 
@@ -96,7 +97,12 @@ def run_retrieval_eval(
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--tier", required=True, choices=["lepanto", "demo"])
+    parser.add_argument(
+        "--tier",
+        required=True,
+        choices=list(load_config().tiers),
+        help="golden-set tier to evaluate (from corpora.yaml)",
+    )
     parser.add_argument(
         "--k-hit",
         type=int,

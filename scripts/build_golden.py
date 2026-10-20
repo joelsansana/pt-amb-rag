@@ -1,11 +1,9 @@
 #!/usr/bin/env python
-"""Generate candidate golden-set questions for a regulation's chunk corpus.
+"""Generate candidate golden-set questions for one corpus's chunk file.
 
 Usage:
     uv run python scripts/build_golden.py \
-        --regulation ai_act --output evals/golden/ai_act.candidates.jsonl
-    uv run python scripts/build_golden.py \
-        --regulation nis2 --output evals/golden/nis2.candidates.jsonl
+        --corpus dl_150_2015 --output evals/golden/dl_150_2015.candidates.jsonl
 """
 
 from __future__ import annotations
@@ -15,7 +13,7 @@ import json
 import logging
 from pathlib import Path
 
-from safety_rag.eval.golden_generator import (
+from pt_amb_rag.eval.golden_generator import (
     GoldenGenerationError,
     generate_candidates,
 )
@@ -25,11 +23,11 @@ logger = logging.getLogger(__name__)
 DATA_DIR = Path("data/processed")
 
 
-def load_chunks(regulation: str) -> list[dict]:
-    path = DATA_DIR / f"{regulation}.jsonl"
+def load_chunks(corpus_id: str) -> list[dict]:
+    path = DATA_DIR / f"{corpus_id}.jsonl"
     if not path.exists():
         raise FileNotFoundError(
-            f"no processed data for regulation {regulation!r}: {path}"
+            f"no processed data for corpus {corpus_id!r}: {path}"
         )
 
     chunks = []
@@ -40,9 +38,9 @@ def load_chunks(regulation: str) -> list[dict]:
 
 
 def build_golden(
-    regulation: str, output: Path, temperature: float = 0.2
+    corpus_id: str, output: Path, temperature: float = 0.2
 ) -> dict:
-    chunks = load_chunks(regulation)
+    chunks = load_chunks(corpus_id)
 
     written = 0
     skipped_no_hash = 0
@@ -86,7 +84,7 @@ def build_golden(
                 )
 
     return {
-        "regulation": regulation,
+        "corpus": corpus_id,
         "chunks_total": len(chunks),
         "chunks_skipped_no_hash": skipped_no_hash,
         "chunks_failed": len(failed),
@@ -97,7 +95,11 @@ def build_golden(
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--regulation", required=True, help="e.g. ai_act, nis2")
+    parser.add_argument(
+        "--corpus",
+        required=True,
+        help="corpus id from corpora.yaml, e.g. dl_150_2015",
+    )
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--temperature", type=float, default=0.2)
     args = parser.parse_args()
@@ -106,7 +108,7 @@ def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
     summary = build_golden(
-        args.regulation, args.output, temperature=args.temperature
+        args.corpus, args.output, temperature=args.temperature
     )
 
     written = summary["candidates_written"]

@@ -2,7 +2,7 @@ import pytest
 from fastapi import Depends, FastAPI
 from fastapi.testclient import TestClient
 
-from safety_rag.api.auth import require_token
+from pt_amb_rag.api.auth import require_token
 
 TOKEN = "s3cret-token"
 

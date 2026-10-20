@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, patch
 
 from qdrant_client.http import models as qmodels
 
-from safety_rag.retrieval.vector_store import (
+from pt_amb_rag.retrieval.vector_store import (
     COLLECTION_NAME,
     PAYLOAD_FIELDS,
     VECTOR_SIZE,
@@ -48,14 +48,14 @@ def _match_value(condition: qmodels.FieldCondition) -> object:
 class TestGetClient:
     def test_default_local_url(self):
         with patch(
-            "safety_rag.retrieval.vector_store.QdrantClient"
+            "pt_amb_rag.retrieval.vector_store.QdrantClient"
         ) as mock_cls:
             get_client()
             mock_cls.assert_called_once_with(url="http://localhost:6333")
 
     def test_custom_url(self):
         with patch(
-            "safety_rag.retrieval.vector_store.QdrantClient"
+            "pt_amb_rag.retrieval.vector_store.QdrantClient"
         ) as mock_cls:
             get_client(url="http://qdrant.internal:6333")
             mock_cls.assert_called_once_with(url="http://qdrant.internal:6333")
@@ -63,7 +63,7 @@ class TestGetClient:
     def test_uses_qdrant_url_env_var(self, monkeypatch):
         monkeypatch.setenv("QDRANT_URL", "http://qdrant:6333")
         with patch(
-            "safety_rag.retrieval.vector_store.QdrantClient"
+            "pt_amb_rag.retrieval.vector_store.QdrantClient"
         ) as mock_cls:
             get_client()
             mock_cls.assert_called_once_with(url="http://qdrant:6333")
@@ -71,7 +71,7 @@ class TestGetClient:
     def test_explicit_url_overrides_env_var(self, monkeypatch):
         monkeypatch.setenv("QDRANT_URL", "http://qdrant:6333")
         with patch(
-            "safety_rag.retrieval.vector_store.QdrantClient"
+            "pt_amb_rag.retrieval.vector_store.QdrantClient"
         ) as mock_cls:
             get_client(url="http://other:6333")
             mock_cls.assert_called_once_with(url="http://other:6333")
@@ -151,7 +151,7 @@ class TestPointId:
 class TestPayload:
     def test_extracts_only_known_fields(self):
         chunk = {
-            "regulation": "ai_act",
+            "regulation": "dl_150_2015",
             "article_num": "26",
             "text": "some text",
             "content_hash": "hash1",
@@ -160,14 +160,16 @@ class TestPayload:
         payload = _payload(chunk)
         assert set(payload.keys()) == set(PAYLOAD_FIELDS)
         assert "extra_field_not_in_schema" not in payload
-        assert payload["regulation"] == "ai_act"
+        assert payload["regulation"] == "dl_150_2015"
         assert payload["article_num"] == "26"
 
     def test_missing_fields_default_to_none(self):
-        payload = _payload({"regulation": "ai_act", "text": "x"})
+        payload = _payload({"regulation": "dl_150_2015", "text": "x"})
         assert payload["chapter"] is None
         assert payload["annex_id"] is None
-        assert payload["recital_num"] is None
+        assert payload["numero"] is None
+        assert payload["alinea"] is None
+        assert payload["diploma"] is None
 
 
 # ---------------------------------------------------------------------------
@@ -183,14 +185,14 @@ class TestUpsertChunks:
 
     def test_embeds_chunk_texts(self):
         chunks = [
-            {"text": "a", "regulation": "ai_act"},
-            {"text": "b", "regulation": "nis2"},
+            {"text": "a", "regulation": "dl_150_2015"},
+            {"text": "b", "regulation": "dl_127_2013"},
         ]
         client = MagicMock()
         client.collection_exists.return_value = True
 
         with patch(
-            "safety_rag.retrieval.vector_store.embed",
+            "pt_amb_rag.retrieval.vector_store.embed",
             return_value=[[0.1, 0.2], [0.3, 0.4]],
         ) as mock_embed:
             upsert_chunks(chunks, client=client)
@@ -198,13 +200,13 @@ class TestUpsertChunks:
 
     def test_upserts_points_with_correct_vectors_and_payload(self):
         chunks = [
-            {"text": "hello", "regulation": "ai_act", "article_num": "26"}
+            {"text": "hello", "regulation": "dl_150_2015", "article_num": "26"}
         ]
         client = MagicMock()
         client.collection_exists.return_value = True
 
         with patch(
-            "safety_rag.retrieval.vector_store.embed", return_value=[[0.5, 0.6]]
+            "pt_amb_rag.retrieval.vector_store.embed", return_value=[[0.5, 0.6]]
         ):
             upsert_chunks(chunks, client=client)
 
@@ -213,7 +215,7 @@ class TestUpsertChunks:
         points = kwargs["points"]
         assert len(points) == 1
         assert points[0].vector == [0.5, 0.6]
-        assert points[0].payload["regulation"] == "ai_act"
+        assert points[0].payload["regulation"] == "dl_150_2015"
         assert points[0].payload["article_num"] == "26"
 
     def test_returns_number_of_points_upserted(self):
@@ -221,7 +223,7 @@ class TestUpsertChunks:
         client = MagicMock()
         client.collection_exists.return_value = True
         with patch(
-            "safety_rag.retrieval.vector_store.embed",
+            "pt_amb_rag.retrieval.vector_store.embed",
             return_value=[[0.0], [0.0], [0.0]],
         ):
             result = upsert_chunks(chunks, client=client)
@@ -231,7 +233,7 @@ class TestUpsertChunks:
         client = MagicMock()
         client.collection_exists.return_value = False
         with patch(
-            "safety_rag.retrieval.vector_store.embed", return_value=[[0.0]]
+            "pt_amb_rag.retrieval.vector_store.embed", return_value=[[0.0]]
         ):
             upsert_chunks([{"text": "x"}], client=client)
         client.create_collection.assert_called_once()
@@ -239,10 +241,10 @@ class TestUpsertChunks:
     def test_uses_default_client_when_none_provided(self):
         with (
             patch(
-                "safety_rag.retrieval.vector_store.get_client"
+                "pt_amb_rag.retrieval.vector_store.get_client"
             ) as mock_get_client,
             patch(
-                "safety_rag.retrieval.vector_store.embed", return_value=[[0.0]]
+                "pt_amb_rag.retrieval.vector_store.embed", return_value=[[0.0]]
             ),
         ):
             mock_client = MagicMock()
@@ -260,7 +262,7 @@ class TestUpsertChunks:
         client.collection_exists.return_value = True
 
         with patch(
-            "safety_rag.retrieval.vector_store.embed", return_value=[[0.0]]
+            "pt_amb_rag.retrieval.vector_store.embed", return_value=[[0.0]]
         ):
             upsert_chunks([chunk], client=client)
             first_id = client.upsert.call_args.kwargs["points"][0].id
@@ -281,12 +283,12 @@ class TestBuildFilter:
         assert _build_filter(None, None) is None
 
     def test_regulation_only(self):
-        result = _build_filter("ai_act", None)
+        result = _build_filter("dl_150_2015", None)
         assert isinstance(result, qmodels.Filter)
         conditions = _field_conditions(result)
         assert len(conditions) == 1
         assert conditions[0].key == "regulation"
-        assert _match_value(conditions[0]) == "ai_act"
+        assert _match_value(conditions[0]) == "dl_150_2015"
 
     def test_article_num_only(self):
         result = _build_filter(None, 26)
@@ -296,7 +298,7 @@ class TestBuildFilter:
         assert _match_value(conditions[0]) == 26
 
     def test_both_filters_combined_with_and(self):
-        result = _build_filter("ai_act", 26)
+        result = _build_filter("dl_150_2015", 26)
         conditions = _field_conditions(result)
         assert len(conditions) == 2
         keys = {cond.key for cond in conditions}
@@ -328,7 +330,7 @@ class TestSearch:
         client = MagicMock()
         client.query_points.return_value = MagicMock(points=[])
 
-        search([0.1], regulation="nis2", article_num=21, client=client)
+        search([0.1], regulation="dl_127_2013", article_num=21, client=client)
 
         _, kwargs = client.query_points.call_args
         query_filter = kwargs["query_filter"]
@@ -344,7 +346,7 @@ class TestSearch:
 
     def test_uses_default_client_when_none_provided(self):
         with patch(
-            "safety_rag.retrieval.vector_store.get_client"
+            "pt_amb_rag.retrieval.vector_store.get_client"
         ) as mock_get_client:
             mock_client = MagicMock()
             mock_client.query_points.return_value = MagicMock(points=[])

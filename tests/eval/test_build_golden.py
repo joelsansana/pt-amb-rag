@@ -6,16 +6,16 @@ import pytest
 
 CHUNK_WITH_HASH = {
     "content_hash": "abc123",
-    "regulation": "ai_act",
-    "celex": "32024R1689",
+    "regulation": "dl_150_2015",
+    "eli": "https://data.dre.pt/eli/dec-lei/150/2015/08/05/p/dre/pt/html",
     "header": "Article 26",
     "text": "Deployers shall...",
 }
 
 CHUNK_NO_HASH = {
     "content_hash": None,
-    "regulation": "ai_act",
-    "celex": "32024R1689",
+    "regulation": "dl_150_2015",
+    "eli": "https://data.dre.pt/eli/dec-lei/150/2015/08/05/p/dre/pt/html",
     "header": "Article 1",
     "text": "Scope...",
 }
@@ -51,8 +51,8 @@ def write_jsonl(path, chunks):
 
 
 def test_load_chunks_reads_jsonl(data_dir):
-    write_jsonl(data_dir / "ai_act.jsonl", [CHUNK_WITH_HASH])
-    assert build_golden.load_chunks("ai_act") == [CHUNK_WITH_HASH]
+    write_jsonl(data_dir / "dl_150_2015.jsonl", [CHUNK_WITH_HASH])
+    assert build_golden.load_chunks("dl_150_2015") == [CHUNK_WITH_HASH]
 
 
 def test_load_chunks_missing_file_raises(data_dir):
@@ -61,18 +61,18 @@ def test_load_chunks_missing_file_raises(data_dir):
 
 
 def test_load_chunks_skips_blank_lines(data_dir):
-    path = data_dir / "ai_act.jsonl"
+    path = data_dir / "dl_150_2015.jsonl"
     path.write_text(json.dumps(CHUNK_WITH_HASH) + "\n\n")
-    assert len(build_golden.load_chunks("ai_act")) == 1
+    assert len(build_golden.load_chunks("dl_150_2015")) == 1
 
 
 @patch("build_golden.generate_candidates")
 def test_build_golden_writes_candidates(mock_gen, data_dir, tmp_path):
-    write_jsonl(data_dir / "ai_act.jsonl", [CHUNK_WITH_HASH])
+    write_jsonl(data_dir / "dl_150_2015.jsonl", [CHUNK_WITH_HASH])
     mock_gen.return_value = FAKE_CANDIDATES
 
     output = tmp_path / "out.jsonl"
-    summary = build_golden.build_golden("ai_act", output)
+    summary = build_golden.build_golden("dl_150_2015", output)
 
     assert len(output.read_text().splitlines()) == 2
     assert summary["candidates_written"] == 2
@@ -85,11 +85,13 @@ def test_build_golden_writes_candidates(mock_gen, data_dir, tmp_path):
 def test_build_golden_skips_chunks_without_content_hash(
     mock_gen, data_dir, tmp_path
 ):
-    write_jsonl(data_dir / "ai_act.jsonl", [CHUNK_NO_HASH, CHUNK_WITH_HASH])
+    write_jsonl(
+        data_dir / "dl_150_2015.jsonl", [CHUNK_NO_HASH, CHUNK_WITH_HASH]
+    )
     mock_gen.return_value = FAKE_CANDIDATES
 
     output = tmp_path / "out.jsonl"
-    summary = build_golden.build_golden("ai_act", output)
+    summary = build_golden.build_golden("dl_150_2015", output)
 
     assert summary["chunks_skipped_no_hash"] == 1
     assert mock_gen.call_count == 1  # only called for the hashed chunk
@@ -99,14 +101,14 @@ def test_build_golden_skips_chunks_without_content_hash(
 def test_build_golden_continues_after_generation_failure(
     mock_gen, data_dir, tmp_path
 ):
-    from safety_rag.eval.golden_generator import GoldenGenerationError
+    from pt_amb_rag.eval.golden_generator import GoldenGenerationError
 
     other_chunk = {**CHUNK_WITH_HASH, "content_hash": "def456"}
-    write_jsonl(data_dir / "ai_act.jsonl", [CHUNK_WITH_HASH, other_chunk])
+    write_jsonl(data_dir / "dl_150_2015.jsonl", [CHUNK_WITH_HASH, other_chunk])
     mock_gen.side_effect = [GoldenGenerationError("boom"), FAKE_CANDIDATES]
 
     output = tmp_path / "out.jsonl"
-    summary = build_golden.build_golden("ai_act", output)
+    summary = build_golden.build_golden("dl_150_2015", output)
 
     assert summary["chunks_failed"] == 1
     assert summary["failed_hashes"] == ["abc123"]
@@ -115,11 +117,11 @@ def test_build_golden_continues_after_generation_failure(
 
 @patch("build_golden.generate_candidates")
 def test_build_golden_passes_temperature_through(mock_gen, data_dir, tmp_path):
-    write_jsonl(data_dir / "ai_act.jsonl", [CHUNK_WITH_HASH])
+    write_jsonl(data_dir / "dl_150_2015.jsonl", [CHUNK_WITH_HASH])
     mock_gen.return_value = FAKE_CANDIDATES
 
     output = tmp_path / "out.jsonl"
-    build_golden.build_golden("ai_act", output, temperature=0.7)
+    build_golden.build_golden("dl_150_2015", output, temperature=0.7)
 
     _, kwargs = mock_gen.call_args
     assert kwargs["temperature"] == 0.7

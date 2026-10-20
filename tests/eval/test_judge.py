@@ -2,7 +2,7 @@ from unittest.mock import patch
 
 import pytest
 
-from safety_rag.eval.judge import JudgeError, judge
+from pt_amb_rag.eval.judge import JudgeError, judge
 
 QUESTION = "What must deployers of high-risk AI systems do for their workers?"
 ANSWER = (
@@ -39,7 +39,7 @@ VALID_ABSTENTION = (
 )
 
 
-@patch("safety_rag.eval.judge.generate")
+@patch("pt_amb_rag.eval.judge.generate")
 def test_parses_valid_verdict_on_first_try(mock_generate):
     mock_generate.return_value = VALID_ANSWERABLE
     verdict = judge(QUESTION, SOURCES, ANSWER)
@@ -48,7 +48,7 @@ def test_parses_valid_verdict_on_first_try(mock_generate):
     assert mock_generate.call_count == 1
 
 
-@patch("safety_rag.eval.judge.generate")
+@patch("pt_amb_rag.eval.judge.generate")
 def test_prompt_carries_question_answer_and_numbered_sources(mock_generate):
     mock_generate.return_value = VALID_ANSWERABLE
     judge(QUESTION, SOURCES, ANSWER)
@@ -59,7 +59,7 @@ def test_prompt_carries_question_answer_and_numbered_sources(mock_generate):
     assert "[2] Recital 133" in prompt
 
 
-@patch("safety_rag.eval.judge.generate")
+@patch("pt_amb_rag.eval.judge.generate")
 def test_answerable_mode_does_not_ask_for_abstention(mock_generate):
     mock_generate.return_value = VALID_ANSWERABLE
     judge(QUESTION, SOURCES, ANSWER, expect_abstention=False)
@@ -68,7 +68,7 @@ def test_answerable_mode_does_not_ask_for_abstention(mock_generate):
     assert "abstention" not in prompt
 
 
-@patch("safety_rag.eval.judge.generate")
+@patch("pt_amb_rag.eval.judge.generate")
 def test_abstention_mode_swaps_criteria_and_validates(mock_generate):
     mock_generate.return_value = VALID_ABSTENTION
     verdict = judge(QUESTION, SOURCES, ANSWER, expect_abstention=True)
@@ -78,24 +78,24 @@ def test_abstention_mode_swaps_criteria_and_validates(mock_generate):
     assert "faithfulness" not in prompt
 
 
-@patch("safety_rag.eval.judge.generate")
+@patch("pt_amb_rag.eval.judge.generate")
 def test_strips_markdown_fences(mock_generate):
     mock_generate.return_value = f"```json\n{VALID_ANSWERABLE}\n```"
     verdict = judge(QUESTION, SOURCES, ANSWER)
     assert verdict["faithfulness"] == "yes"
 
 
-@patch("safety_rag.eval.judge.generate")
+@patch("pt_amb_rag.eval.judge.generate")
 def test_retries_once_on_invalid_json_then_succeeds(mock_generate):
     mock_generate.side_effect = ["not json at all", VALID_ANSWERABLE]
     verdict = judge(QUESTION, SOURCES, ANSWER)
     assert verdict["faithfulness"] == "yes"
     assert mock_generate.call_count == 2
     second_call_prompt = mock_generate.call_args_list[1].args[0]
-    assert "Reminder" in second_call_prompt
+    assert "Lembrete" in second_call_prompt
 
 
-@patch("safety_rag.eval.judge.generate")
+@patch("pt_amb_rag.eval.judge.generate")
 def test_raises_after_second_failure(mock_generate):
     mock_generate.side_effect = ["nope", "still nope"]
     with pytest.raises(JudgeError):
@@ -103,7 +103,7 @@ def test_raises_after_second_failure(mock_generate):
     assert mock_generate.call_count == 2
 
 
-@patch("safety_rag.eval.judge.generate")
+@patch("pt_amb_rag.eval.judge.generate")
 def test_rejects_verdict_value_outside_allowed_set(mock_generate):
     # "maybe" is verdict drift, not a verdict — must fail validation,
     # retry, and raise rather than be accepted.
@@ -117,7 +117,7 @@ def test_rejects_verdict_value_outside_allowed_set(mock_generate):
     assert mock_generate.call_count == 2
 
 
-@patch("safety_rag.eval.judge.generate")
+@patch("pt_amb_rag.eval.judge.generate")
 def test_rejects_wrong_schema_for_mode(mock_generate):
     # An abstention-only verdict is invalid for answerable mode...
     mock_generate.side_effect = [VALID_ABSTENTION, VALID_ABSTENTION]
@@ -130,7 +130,7 @@ def test_rejects_wrong_schema_for_mode(mock_generate):
         judge(QUESTION, SOURCES, ANSWER, expect_abstention=True)
 
 
-@patch("safety_rag.eval.judge.generate")
+@patch("pt_amb_rag.eval.judge.generate")
 def test_passes_temperature_through(mock_generate):
     mock_generate.return_value = VALID_ANSWERABLE
     judge(QUESTION, SOURCES, ANSWER, temperature=0.5)

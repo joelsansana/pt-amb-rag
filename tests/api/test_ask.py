@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 import pytest
 
-from safety_rag.api.ask import ask
+from pt_amb_rag.api.ask import ask
 
 
 def make_result(payload: dict | None, score: float) -> SimpleNamespace:
@@ -20,7 +20,7 @@ class TestAsk:
     def test_returns_answer_and_sources(self):
         result = make_result(
             {
-                "regulation": "ai_act",
+                "diploma": "Decreto-Lei n.º 150/2015",
                 "article_num": "26",
                 "chapter": "4 — Deployer obligations",
                 "header": "Article 26",
@@ -30,13 +30,13 @@ class TestAsk:
         )
         with (
             patch(
-                "safety_rag.api.ask.embed", return_value=[[0.1, 0.2, 0.3]]
+                "pt_amb_rag.api.ask.embed", return_value=[[0.1, 0.2, 0.3]]
             ) as mock_embed,
             patch(
-                "safety_rag.api.ask.search", return_value=[result]
+                "pt_amb_rag.api.ask.search", return_value=[result]
             ) as mock_search,
             patch(
-                "safety_rag.api.ask.generate", return_value="Deployers must..."
+                "pt_amb_rag.api.ask.generate", return_value="Deployers must..."
             ) as mock_generate,
         ):
             response = ask("What are the deployer obligations?")
@@ -45,7 +45,7 @@ class TestAsk:
         assert response["sources"] == [
             {
                 "score": 0.87,
-                "regulation": "ai_act",
+                "diploma": "Decreto-Lei n.º 150/2015",
                 "article_num": "26",
                 "chapter": "4 — Deployer obligations",
                 "header": "Article 26",
@@ -59,10 +59,10 @@ class TestAsk:
     def test_embeds_question_and_uses_first_vector(self):
         with (
             patch(
-                "safety_rag.api.ask.embed", return_value=[[0.5, 0.6]]
+                "pt_amb_rag.api.ask.embed", return_value=[[0.5, 0.6]]
             ) as mock_embed,
-            patch("safety_rag.api.ask.search", return_value=[]) as mock_search,
-            patch("safety_rag.api.ask.generate", return_value="answer"),
+            patch("pt_amb_rag.api.ask.search", return_value=[]) as mock_search,
+            patch("pt_amb_rag.api.ask.generate", return_value="answer"),
         ):
             ask("some question")
 
@@ -76,22 +76,22 @@ class TestAsk:
 
     def test_passes_k_and_filters_to_search(self):
         with (
-            patch("safety_rag.api.ask.embed", return_value=[[0.1]]),
-            patch("safety_rag.api.ask.search", return_value=[]) as mock_search,
-            patch("safety_rag.api.ask.generate", return_value="a"),
+            patch("pt_amb_rag.api.ask.embed", return_value=[[0.1]]),
+            patch("pt_amb_rag.api.ask.search", return_value=[]) as mock_search,
+            patch("pt_amb_rag.api.ask.generate", return_value="a"),
         ):
-            ask("q", k=3, regulation="nis2", article_num="21")
+            ask("q", k=3, regulation="dl_127_2013", article_num="21")
 
         _, kwargs = mock_search.call_args
         assert kwargs["k"] == 3
-        assert kwargs["regulation"] == "nis2"
+        assert kwargs["regulation"] == "dl_127_2013"
         assert kwargs["article_num"] == "21"
 
     def test_default_k_is_five(self):
         with (
-            patch("safety_rag.api.ask.embed", return_value=[[0.1]]),
-            patch("safety_rag.api.ask.search", return_value=[]) as mock_search,
-            patch("safety_rag.api.ask.generate", return_value="a"),
+            patch("pt_amb_rag.api.ask.embed", return_value=[[0.1]]),
+            patch("pt_amb_rag.api.ask.search", return_value=[]) as mock_search,
+            patch("pt_amb_rag.api.ask.generate", return_value="a"),
         ):
             ask("q")
 
@@ -100,14 +100,18 @@ class TestAsk:
 
     def test_generate_receives_a_prompt_containing_question_and_context(self):
         result = make_result(
-            {"regulation": "ai_act", "article_num": "26", "text": "chunk text"},
+            {
+                "diploma": "Decreto-Lei n.º 150/2015",
+                "article_num": "8",
+                "text": "chunk text",
+            },
             score=0.9,
         )
         with (
-            patch("safety_rag.api.ask.embed", return_value=[[0.1]]),
-            patch("safety_rag.api.ask.search", return_value=[result]),
+            patch("pt_amb_rag.api.ask.embed", return_value=[[0.1]]),
+            patch("pt_amb_rag.api.ask.search", return_value=[result]),
             patch(
-                "safety_rag.api.ask.generate", return_value="a"
+                "pt_amb_rag.api.ask.generate", return_value="a"
             ) as mock_generate,
         ):
             ask("What are deployer obligations?")
@@ -115,14 +119,14 @@ class TestAsk:
         prompt = mock_generate.call_args[0][0]
         assert "What are deployer obligations?" in prompt
         assert "chunk text" in prompt
-        assert "Regulation: ai_act" in prompt
+        assert "Diploma: Decreto-Lei n.º 150/2015" in prompt
 
     def test_no_results_still_returns_answer_with_empty_sources(self):
         with (
-            patch("safety_rag.api.ask.embed", return_value=[[0.1]]),
-            patch("safety_rag.api.ask.search", return_value=[]),
+            patch("pt_amb_rag.api.ask.embed", return_value=[[0.1]]),
+            patch("pt_amb_rag.api.ask.search", return_value=[]),
             patch(
-                "safety_rag.api.ask.generate",
+                "pt_amb_rag.api.ask.generate",
                 return_value="The corpus does not address this.",
             ),
         ):
@@ -134,9 +138,9 @@ class TestAsk:
     def test_source_with_none_payload_does_not_crash(self):
         result = make_result(None, score=0.5)
         with (
-            patch("safety_rag.api.ask.embed", return_value=[[0.1]]),
-            patch("safety_rag.api.ask.search", return_value=[result]),
-            patch("safety_rag.api.ask.generate", return_value="a"),
+            patch("pt_amb_rag.api.ask.embed", return_value=[[0.1]]),
+            patch("pt_amb_rag.api.ask.search", return_value=[result]),
+            patch("pt_amb_rag.api.ask.generate", return_value="a"),
         ):
             response = ask("q")
 
@@ -144,26 +148,33 @@ class TestAsk:
 
     def test_multiple_sources_preserve_score_and_payload_fields(self):
         r1 = make_result(
-            {"regulation": "ai_act", "article_num": "26"}, score=0.9
+            {
+                "diploma": "Decreto-Lei n.º 150/2015",
+                "article_num": "8",
+            },
+            score=0.9,
         )
-        r2 = make_result({"regulation": "nis2", "article_num": "21"}, score=0.7)
+        r2 = make_result(
+            {"diploma": "Decreto-Lei n.º 127/2013", "article_num": "8"},
+            score=0.7,
+        )
         with (
-            patch("safety_rag.api.ask.embed", return_value=[[0.1]]),
-            patch("safety_rag.api.ask.search", return_value=[r1, r2]),
-            patch("safety_rag.api.ask.generate", return_value="a"),
+            patch("pt_amb_rag.api.ask.embed", return_value=[[0.1]]),
+            patch("pt_amb_rag.api.ask.search", return_value=[r1, r2]),
+            patch("pt_amb_rag.api.ask.generate", return_value="a"),
         ):
             response = ask("q")
 
         assert len(response["sources"]) == 2
         assert response["sources"][0] == {
             "score": 0.9,
-            "regulation": "ai_act",
-            "article_num": "26",
+            "diploma": "Decreto-Lei n.º 150/2015",
+            "article_num": "8",
         }
         assert response["sources"][1] == {
             "score": 0.7,
-            "regulation": "nis2",
-            "article_num": "21",
+            "diploma": "Decreto-Lei n.º 127/2013",
+            "article_num": "8",
         }
 
 
@@ -208,9 +219,9 @@ class TestAskIntegration:
         # source should plausibly be from there -- a soft, informative
         # check rather than a hard requirement on retrieval ranking
         top_source = r["sources"][0]
-        if top_source["regulation"] != "ai_act":
+        if top_source["diploma"] != "Decreto-Lei n.º 150/2015":
             print(
-                f"NOTE: top source was {top_source['regulation']} "
+                f"NOTE: top source was {top_source['diploma']} "
                 f"Art. {top_source['article_num']}, not ai_act — "
                 "check retrieval quality if this is unexpected."
             )

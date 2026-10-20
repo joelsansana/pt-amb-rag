@@ -1,4 +1,4 @@
-from safety_rag.eval.sampling import candidate_key, sample_unreviewed
+from pt_amb_rag.eval.sampling import candidate_key, sample_unreviewed
 
 
 def make(q: str, content_hash: str = "h1") -> dict:

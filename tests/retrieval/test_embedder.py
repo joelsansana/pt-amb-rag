@@ -3,8 +3,15 @@ from unittest.mock import MagicMock, patch
 import numpy as np
 import pytest
 
-import safety_rag.retrieval.embedder as embedder_module
-from safety_rag.retrieval.embedder import embed, get_model
+import pt_amb_rag.retrieval.embedder as embedder_module
+from pt_amb_rag.retrieval.embedder import embed, get_model
+
+
+def _set_dimension(mock_st: MagicMock, dimension: int) -> None:
+    mock_st.return_value.get_sentence_embedding_dimension.return_value = (
+        dimension
+    )
+
 
 # ---------------------------------------------------------------------------
 # get_model — singleton / lazy-loading behavior
@@ -22,28 +29,44 @@ class TestGetModel:
 
     def test_loads_model_with_expected_name(self):
         with patch(
-            "safety_rag.retrieval.embedder.SentenceTransformer"
+            "pt_amb_rag.retrieval.embedder.SentenceTransformer"
         ) as mock_st:
+            _set_dimension(mock_st, embedder_module._CONFIG.embedding.dimension)
             get_model()
-            mock_st.assert_called_once_with("BAAI/bge-small-en-v1.5")
+            mock_st.assert_called_once_with(
+                embedder_module._CONFIG.embedding.model
+            )
 
     def test_returns_singleton_instance(self):
         with patch(
-            "safety_rag.retrieval.embedder.SentenceTransformer"
+            "pt_amb_rag.retrieval.embedder.SentenceTransformer"
         ) as mock_st:
-            mock_st.return_value = MagicMock()
+            _set_dimension(mock_st, embedder_module._CONFIG.embedding.dimension)
             first = get_model()
             second = get_model()
             assert first is second
 
     def test_only_constructs_model_once(self):
         with patch(
-            "safety_rag.retrieval.embedder.SentenceTransformer"
+            "pt_amb_rag.retrieval.embedder.SentenceTransformer"
         ) as mock_st:
+            _set_dimension(mock_st, embedder_module._CONFIG.embedding.dimension)
             get_model()
             get_model()
             get_model()
             mock_st.assert_called_once()
+
+    def test_dimension_mismatch_is_rejected_loudly(self):
+        """A multilingual embedder swapped in without updating the
+        manifest would otherwise fail deep inside Qdrant."""
+        with patch(
+            "pt_amb_rag.retrieval.embedder.SentenceTransformer"
+        ) as mock_st:
+            _set_dimension(
+                mock_st, embedder_module._CONFIG.embedding.dimension + 1
+            )
+            with pytest.raises(RuntimeError, match="dimensional vectors"):
+                get_model()
 
 
 # ---------------------------------------------------------------------------
@@ -62,7 +85,7 @@ class TestEmbed:
         mock_model = MagicMock()
         mock_model.encode.return_value = np.array(encode_return)
         patcher = patch(
-            "safety_rag.retrieval.embedder.get_model", return_value=mock_model
+            "pt_amb_rag.retrieval.embedder.get_model", return_value=mock_model
         )
         return patcher, mock_model
 

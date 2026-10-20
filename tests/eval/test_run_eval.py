@@ -7,7 +7,7 @@ import run_eval
 
 GOLDEN_RECORD = {
     "q_id": "q001",
-    "tier": "lepanto",
+    "tier": "principal",
     "question": "What must deployers do under Article 26?",
     "gold_ids": ["hash_a"],
     "all_acceptable_ids": ["hash_a", "hash_b"],
@@ -16,7 +16,7 @@ GOLDEN_RECORD = {
 
 
 def write_golden(tmp_path, records):
-    path = tmp_path / "lepanto.jsonl"
+    path = tmp_path / "principal.jsonl"
     path.write_text("\n".join(json.dumps(r) for r in records) + "\n")
     return path
 
@@ -123,6 +123,6 @@ def test_per_question_results_recorded(mock_ask, tmp_path):
 
 def test_main_raises_for_missing_tier_file(tmp_path, monkeypatch):
     monkeypatch.setattr(run_eval, "GOLDEN_DIR", tmp_path)
-    monkeypatch.setattr(sys, "argv", ["run_eval.py", "--tier", "lepanto"])
+    monkeypatch.setattr(sys, "argv", ["run_eval.py", "--tier", "principal"])
     with pytest.raises(FileNotFoundError):
         run_eval.main()

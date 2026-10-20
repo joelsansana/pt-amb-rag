@@ -23,7 +23,7 @@ services:
       - hf_cache:/home/appuser/.cache/huggingface
     command: >
       sh -c "python scripts/build_index.py &&
-             python -m uvicorn safety_rag.api.main:app --host 0.0.0.0 --port 8000"
+             python -m uvicorn pt_amb_rag.api.main:app --host 0.0.0.0 --port 8000"
 
 volumes:
   qdrant_data:

@@ -1,0 +1,371 @@
+{
+  "version": 1,
+  "sources": [
+    {
+      "id": 1,
+      "url": "https://diariodarepublica.pt/dr/detalhe/decreto-lei/56-2012-553603",
+      "title": "DL 56/2012 organica APA",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 2,
+      "url": "https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/2012-75214160",
+      "title": "DL 56/2012 consolidado",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 3,
+      "url": "https://sniambgeoviewer.apambiente.pt/GeoDocs/geoportaldocs/APA/Estatutos_APA.pdf",
+      "title": "Estatutos APA Portaria 108/2013 alterada",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 4,
+      "url": "https://diariodarepublica.pt/dr/detalhe/decreto-lei/102-d-2020-150908012",
+      "title": "DL 102-D/2020 RGGR",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 5,
+      "url": "https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/2020-150908020",
+      "title": "RGGR consolidado",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 6,
+      "url": "https://apambiente.pt/residuos/regime-geral-de-gestao-de-residuos",
+      "title": "APA RGGR page",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 7,
+      "url": "https://diariodarepublica.pt/dr/detalhe/decreto-lei/89-2025-928506355",
+      "title": "DL 89/2025 altera DL 127/2013",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 8,
+      "url": "https://diariodarepublica.pt/dr/detalhe/decreto-lei/151-b-2013-513863",
+      "title": "DL 151-B/2013 AIA",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 9,
+      "url": "https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/2013-70122774",
+      "title": "AIA consolidado",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 10,
+      "url": "https://diariodarepublica.pt/dr/detalhe/decreto-lei/121-2026-1135578393",
+      "title": "DL 121/2026 altera DL 150/2015 Seveso",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 11,
+      "url": "https://diariodarepublica.pt/dr/detalhe/decreto-lei/150-2015-69951097",
+      "title": "DL 150/2015 Seveso III",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 12,
+      "url": "https://portugal.gov.pt/gc25/comunicacao/comunicados/reforco-na-prevencao-de-acidentes-graves-com-substancias-perigosas",
+      "title": "Gov comunicado DL 121/2026",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 13,
+      "url": "https://apambiente.pt/avaliacao-e-gestao-ambiental/licenciamento-unico-ambiental",
+      "title": "APA LUA TUA",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 14,
+      "url": "https://apambiente.pt/avaliacao-e-gestao-ambiental/modulo-lua-no-siliamb",
+      "title": "APA modulo LUA SILiAmb",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 15,
+      "url": "https://apoiosiliamb.apambiente.pt/content/o-que-%c3%a9-o-siliamb?language=pt-pt",
+      "title": "SILiAmb apoio",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 16,
+      "url": "https://eur-lex.europa.eu/legal-content/PT/TXT/?uri=CELEX:32024L1785",
+      "title": "Diretiva 2024/1785 IED amending dir",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 17,
+      "url": "https://apambiente.pt/prevencao-e-gestao-de-riscos/legislacao",
+      "title": "APA riscos legislacao",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 18,
+      "url": "https://igamaot.gov.pt/pt/atividade/seguranca-prevencao-riscos/regime-de-prevencao-de-acidentes-graves-seveso",
+      "title": "IGAMAOT Seveso",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 19,
+      "url": "https://www.cuatrecasas.com/pt/portugal/publico-1/art/alteracao-ao-regime-juridico-de-emissoes-industriais-1",
+      "title": "Cuatrecasas DL 89/2025",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 20,
+      "url": "https://dados.gov.pt/pt/datasets/lei-organica-apa",
+      "title": "dados.gov.pt lei organica APA",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 21,
+      "url": "https://www.gov.pt/entidades/agencia-portuguesa-do-ambiente",
+      "title": "gov.pt APA entidade",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 22,
+      "url": "https://diariodarepublica.pt/dr/detalhe/decreto-lei/46-2008-247037",
+      "title": "DL 46/2008 RCD residuos construcao",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 23,
+      "url": "https://siaia.apambiente.pt/AIA_Todos.aspx",
+      "title": "SIAIA base AIA",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 24,
+      "url": "https://apambiente.pt/avaliacao-e-gestao-ambiental/registo-de-emissoes-e-transferencia-de-poluentes-prtr",
+      "title": "APA PRTR page",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 25,
+      "url": "https://diariodarepublica.pt/dr/detalhe/decreto-lei/127-2008-456784",
+      "title": "DL 127/2008 PRTR",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 26,
+      "url": "https://apambiente.pt/avaliacao-e-gestao-ambiental/prevencao-da-contaminacao-e-remediacao-do-solo",
+      "title": "APA solos remediacao",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 27,
+      "url": "https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/2007-34479475-43943975",
+      "title": "DL 226-A/2007 consolidado (aguas)",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 28,
+      "url": "https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/2025-928671789",
+      "title": "REI consolidado DL 127/2013 + DL 89/2025",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 29,
+      "url": "https://files.diariodarepublica.pt/1s/2025/08/15400/0000200011.pdf",
+      "title": "PDF oficial DL 89/2025",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 30,
+      "url": "https://diariodarepublica.pt/dr/detalhe/diario-republica/182-2025-935918853",
+      "title": "DR 182/2025 retifica DL 89/2025",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 31,
+      "url": "https://diariodarepublica.pt/dr/detalhe/decreto-lei/124-2026-1139191703",
+      "title": "DL 124/2026 altera DL 39/2018 MCP",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 32,
+      "url": "https://diariodarepublica.pt/dr/detalhe/decreto-lei/127-2013-499546",
+      "title": "DL 127/2013 original",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 33,
+      "url": "https://diariodarepublica.pt/dr/detalhe/declaracao-retificacao/45-a-2013-169457",
+      "title": "Decl Ret 45-A/2013",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 34,
+      "url": "https://rea.apambiente.pt/content/preven%C3%A7%C3%A3o-e-controlo-integrados-da-polui%C3%A7%C3%A3o",
+      "title": "REA PCIP DEI 2.0 transposicao em curso",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 35,
+      "url": "https://apambiente.pt/avaliacao-e-gestao-ambiental/prevencao-e-controlo-integrados-de-poluicao-pcip",
+      "title": "APA PCIP page",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 36,
+      "url": "https://apambiente.pt/avaliacao-e-gestao-ambiental/licencas-ambientaistua",
+      "title": "APA licencas ambientais TUA",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 37,
+      "url": "https://participa.pt/pt/consulta/consulta-publica-bondalti-chemicals-sa",
+      "title": "Consulta publica Bondalti PCIP LUA",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 38,
+      "url": "https://cm-estarreja.pt/media/Documentos/protecao_civil/PEExt/PEExt_Divulgar_merged.pdf",
+      "title": "PEExt Estarreja Seveso niveis",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 39,
+      "url": "https://siaia.apambiente.pt/ProcessoAIA/Detalhes/3625",
+      "title": "SIAIA AIA 3625 HVO Galp Sines",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 40,
+      "url": "https://siaia.apambiente.pt/AIADOC/AIA3625/parecer_ca_aia3625_signed20237141577.pdf",
+      "title": "Parecer CA AIA HVO Galp",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 41,
+      "url": "https://www.sines.pt/pages/626",
+      "title": "PEExt Sines municipio",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 42,
+      "url": "https://www.galp.com/corp/Portals/0/Recursos/Seguranca/Petrogal_RefinariaDeSines_20260602.pdf",
+      "title": "Galp info publica Seveso refinaria Sines",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 43,
+      "url": "https://sines.repsol.pt/pt/comunidade/seguranca/seguranca-das-instalacoes/index.cshtml",
+      "title": "Repsol Sines segurancas",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 44,
+      "url": "https://expresso.pt/sustentabilidade/ambiente/2025-08-14-refinaria-da-galp-em-sines-lidera-poluicao-industrial-em-portugal-pelo-quarto-ano-consecutivo-seguida-pela-tap-cf8ebb2a",
+      "title": "Expresso top10 poluidores",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 45,
+      "url": "https://www.ccdr-lvt.pt/licenciamento-permissoes-certificacoes/residuos/descontaminacao-de-solos",
+      "title": "CCDR-LVT descontaminacao solos",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 46,
+      "url": "https://builtcolab.pt/wp-content/uploads/2024/11/Solos-e-Rochas-Contaminados_Sessao1_Todas.pdf",
+      "title": "BUILT CoLAB solos PRoSolos",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 47,
+      "url": "https://www.ccdr-lvt.pt/licenciamento-permissoes-certificacoes/licenciamento-unico-ambiental-lua",
+      "title": "CCDR-LVT LUA",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 48,
+      "url": "https://pgdlisboa.pt/leis/lei_mostra_articulado.php?nid=3398&tabela=leis",
+      "title": "PGD DL 102-D/2020 versoes",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 49,
+      "url": "https://pgdlisboa.pt/leis/lei_mostra_articulado.php?nid=2837&tabela=leis&ficha=1",
+      "title": "PGD DL 151-B/2013 versoes",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 50,
+      "url": "https://pgdlisboa.pt/leis/lei_mostra_articulado.php?nid=1379&tabela=leis&ficha=1",
+      "title": "PGD DL 226-A/2007 versoes",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 51,
+      "url": "https://pgdlisboa.pt/leis/lei_mostra_articulado.php?nid=2254&tabela=leis",
+      "title": "PGD DL 127/2013",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 52,
+      "url": "https://apoiosiliamb.apambiente.pt/content/pei-portal-emissões-industriais",
+      "title": "PEI Portal Emissoes Industriais",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 53,
+      "url": "https://data.dre.pt",
+      "title": "data.dre.pt API",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 54,
+      "url": "https://github.com/apiaberta/connector-dre",
+      "title": "apiaberta connector-dre",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 55,
+      "url": "https://www2.gov.pt/cve/LandingPage.aspx",
+      "title": "Balcao do Empreendedor",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 56,
+      "url": "https://www.parlamento.pt/Cidadania/Paginas/DadosAbertos.aspx",
+      "title": "Parlamento dados abertos",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 57,
+      "url": "https://apambiente.pt/apa/legislacao",
+      "title": "APA legislacao page",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 58,
+      "url": "https://sir.iapmei.pt/Consulta",
+      "title": "SIR IAPMEI consulta",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 59,
+      "url": "https://faolex.fao.org/docs/pdf/por72551.pdf",
+      "title": "FAOLEX DL 226-A/2007 consolidado",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 60,
+      "url": "https://diariodarepublica.pt/dr/detalhe/decreto-lei/226-a-2007-340237",
+      "title": "DL 226-A/2007 original",
+      "accessed": "2026-10-16"
+    },
+    {
+      "id": 61,
+      "url": "https://www.pgdlisboa.pt/leis/lei_mostra_articulado.php?nid=1379&tabela=leis",
+      "title": "PGD DL 226-A/2007 11 versoes",
+      "accessed": "2026-10-16"
+    }
+  ]
+}

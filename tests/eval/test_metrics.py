@@ -1,6 +1,6 @@
 import pytest
 
-from safety_rag.eval.metrics import hit_at_k, mrr_at_k, recall_at_k
+from pt_amb_rag.eval.metrics import hit_at_k, mrr_at_k, recall_at_k
 
 # --- hit_at_k ---
 

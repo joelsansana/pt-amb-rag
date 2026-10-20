@@ -5,7 +5,7 @@ For each question: call ask() unfiltered (no regulation/part/article_num
 filters — same realism rule as run_eval.py), then judge() the answer
 against the retrieved sources.
 
-- lepanto/demo tiers: judged for faithfulness + citation_accuracy
+- principal tier: judged for faithfulness + citation_accuracy
 - unanswerable tier: judged for abstention (expect_abstention=True)
 
 k defaults to 5 to match the production API's AskRequest default — the
@@ -13,11 +13,11 @@ generation eval measures the system a user actually gets, not the wider
 k=10 window the retrieval eval needs for ranking metrics.
 
 Usage:
-    uv run python scripts/run_eval_gen.py --tier lepanto
-    uv run python scripts/run_eval_gen.py --tier demo
+    uv run python scripts/run_eval_gen.py --tier principal
     uv run python scripts/run_eval_gen.py --tier unanswerable
-    uv run python scripts/run_eval_gen.py --tier lepanto \
-        --output evals/results/gen_lepanto.json
+    uv run python scripts/run_eval_gen.py --tier unanswerable
+    uv run python scripts/run_eval_gen.py --tier principal \
+        --output evals/results/gen_principal.json
 """
 
 from __future__ import annotations
@@ -30,8 +30,9 @@ import sys
 import time
 from pathlib import Path
 
-from safety_rag.api.ask import ask
-from safety_rag.eval.judge import JudgeError, judge
+from pt_amb_rag.api.ask import ask
+from pt_amb_rag.config import load_config
+from pt_amb_rag.eval.judge import JudgeError, judge
 
 logger = logging.getLogger(__name__)
 
@@ -139,7 +140,10 @@ def run_generation_eval(golden_path: Path, k: int = 5) -> dict:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "--tier", required=True, choices=["lepanto", "demo", "unanswerable"]
+        "--tier",
+        required=True,
+        choices=list(load_config().tiers),
+        help="golden-set tier to evaluate (from corpora.yaml)",
     )
     parser.add_argument(
         "--k",

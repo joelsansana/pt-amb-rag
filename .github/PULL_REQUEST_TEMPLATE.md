@@ -1,6 +1,6 @@
 ---
 name: Pull request
-about: Submit a change to eu-ai-rag
+about: Submit a change to pt-amb-rag
 ---
 
 ## What this PR does

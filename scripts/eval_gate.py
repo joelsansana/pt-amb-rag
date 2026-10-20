@@ -8,7 +8,7 @@ create the baseline without failing itself (the bootstrap case).
 
 Usage:
     uv run python scripts/eval_gate.py \
-        --current eval_run_lepanto.json \
+        --current eval_run_principal.json \
         --baseline-url <raw.githubusercontent.com/.../baseline.json> \
         --metric hit_at_5 \
         --tolerance 0.02

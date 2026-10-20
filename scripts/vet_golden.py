@@ -3,12 +3,12 @@
 
 Usage:
     uv run python scripts/vet_golden.py \
-        --candidates evals/golden/ai_act.candidates.jsonl
+        --candidates evals/golden/dl_150_2015.candidates.jsonl
 
 Keys:
-    l = accept into lepanto.jsonl
-    d = accept into demo.jsonl
-    e = edit the question text, then choose l/d
+    p = accept into principal.jsonl
+    u = accept into unanswerable.jsonl
+    e = edit the question text, then choose p/u
     r = reject
     s = skip for now (ask again next run)
     q = save and quit
@@ -20,16 +20,16 @@ import argparse
 import json
 from pathlib import Path
 
-from safety_rag.eval.prefilter import prefilter
-from safety_rag.eval.sampling import candidate_key, sample_unreviewed
+from pt_amb_rag.eval.prefilter import prefilter
+from pt_amb_rag.eval.sampling import candidate_key, sample_unreviewed
 
 GOLDEN_DIR = Path("evals/golden")
 STATE_DIR = GOLDEN_DIR / "_vetting_state"
 
 
-def load_chunk_lookup(regulation: str) -> dict[str, dict]:
+def load_chunk_lookup(corpus_id: str) -> dict[str, dict]:
     """content_hash -> chunk, so we can show full context during review."""
-    path = Path("data/processed") / f"{regulation}.jsonl"
+    path = Path("data/processed") / f"{corpus_id}.jsonl"
     lookup = {}
     for line in path.read_text().splitlines():
         if line.strip():
@@ -77,7 +77,7 @@ def next_q_id(tier: str) -> str:
 
 def run(
     candidates_path: Path,
-    regulation: str,
+    corpus_id: str,
     sample_n: int | None = None,
     seed: int | None = None,
 ) -> None:
@@ -92,7 +92,7 @@ def run(
         f"{dropped} auto-dropped by prefilter, {len(kept)} to review.\n"
     )
 
-    chunk_lookup = load_chunk_lookup(regulation)
+    chunk_lookup = load_chunk_lookup(corpus_id)
     state_path = STATE_DIR / f"{candidates_path.stem}.state.json"
     state = load_state(state_path)
 
@@ -125,7 +125,10 @@ def run(
         print("-" * 70)
 
         choice = (
-            input("[l]epanto  [d]emo  [e]dit  [r]eject  [s]kip  [q]uit > ")
+            input(
+                "[p]rincipal  [u]nanswerable  [e]dit  [r]eject  "
+                "[s]kip  [q]uit > "
+            )
             .strip()
             .lower()
         )
@@ -147,10 +150,14 @@ def run(
             new_q = input("New question text: ").strip()
             if new_q:
                 candidate["question"] = new_q
-            choice = input("[l]epanto  [d]emo  [r]eject > ").strip().lower()
+            choice = (
+                input("[p]rincipal  [u]nanswerable  [r]eject > ")
+                .strip()
+                .lower()
+            )
 
-        if choice in ("l", "d"):
-            tier = "lepanto" if choice == "l" else "demo"
+        if choice in ("p", "u"):
+            tier = "principal" if choice == "p" else "unanswerable"
             record = to_golden_record(candidate, tier, next_q_id(tier))
             append_to_tier(tier, record)
             state[key] = f"accepted:{tier}"
@@ -170,9 +177,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--candidates", required=True, type=Path)
     parser.add_argument(
-        "--regulation",
+        "--corpus",
         help="defaults to the candidates filename's prefix, e.g. "
-        "ai_act.candidates.jsonl -> ai_act",
+        "dl_150_2015.candidates.jsonl -> dl_150_2015",
     )
     parser.add_argument(
         "--sample",
@@ -189,8 +196,8 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    regulation = args.regulation or args.candidates.stem.split(".")[0]
-    run(args.candidates, regulation, sample_n=args.sample, seed=args.seed)
+    corpus_id = args.corpus or args.candidates.stem.split(".")[0]
+    run(args.candidates, corpus_id, sample_n=args.sample, seed=args.seed)
 
 
 if __name__ == "__main__":

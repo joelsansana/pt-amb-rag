@@ -1,6 +1,6 @@
-# Contributing to `eu-ai-rag`
+# Contributing to `pt-amb-rag`
 
-Thanks for your interest in this project. It's a portfolio-grade RAG system over EU regulatory text, and contributions that improve retrieval quality, evaluation rigour, or corpus coverage are very welcome.
+Thanks for your interest in this project. It's a portfolio-grade RAG system over Portuguese environmental legislation, and contributions that improve retrieval quality, evaluation rigour, or corpus coverage are very welcome.
 
 ## Quick links
 
@@ -62,8 +62,8 @@ For large changes, please **open the issue first** before writing code. This avo
 
 ```bash
 # Clone
-git clone https://github.com/joelsansana/eu-ai-rag.git
-cd eu-ai-rag
+git clone https://github.com/joelsansana/pt-amb-rag.git
+cd pt-amb-rag
 
 # Python + dependencies (uv-managed)
 uv sync --all-extras
@@ -89,4 +89,4 @@ This is a small, focused project. Be kind, be specific in your feedback, and ass
 
 ---
 
-*Thanks for helping make `eu-ai-rag` more useful and more honest.*
+*Thanks for helping make `pt-amb-rag` more useful and more honest.*

@@ -1,7 +1,7 @@
 [project]
-name = "safety-rag"
+name = "pt-amb-rag"
 version = "0.1.0"
-description = "Add your description here"
+description = "Eval-gated RAG over Portuguese environmental legislation (APA-administered instruments)"
 authors = [
     { name = "Joel Sansana", email = "joelsansana@gmail.com" }
 ]
@@ -18,10 +18,11 @@ dependencies = [
     "sse-starlette>=3.4.11",
     "tiktoken>=0.14.0",
     "uvicorn>=0.54.0",
+    "pyyaml>=6.0.2",
 ]
 
 [project.scripts]
-safety-rag = "safety_rag:main"
+pt-amb-rag = "pt_amb_rag:main"
 
 [build-system]
 requires = ["uv_build>=0.12.7,<0.13.0"]
@@ -43,15 +44,13 @@ target-version = "py312"
 select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
 
 [tool.ruff.lint.per-file-ignores]
-# The playground embeds a single-page app as a Python string; its HTML and
-# CSS cannot be wrapped to 80 columns.
-"playground.py" = ["E501"]
 # These two modules hold LLM prompt templates. Their long lines are prose
 # inside string literals, where `# noqa` cannot go and where rewrapping
 # would silently change the prompt sent to the model — which would move
 # the judge/golden-set numbers this repo reports.
-"src/safety_rag/eval/judge.py" = ["E501"]
-"src/safety_rag/eval/golden_generator.py" = ["E501"]
+"src/pt_amb_rag/eval/judge.py" = ["E501"]
+"src/pt_amb_rag/eval/golden_generator.py" = ["E501"]
+"src/pt_amb_rag/generation/prompts.py" = ["E501"]
 
 [tool.pyright]
 pythonVersion = "3.12"
